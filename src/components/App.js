@@ -1,10 +1,15 @@
-import './App.css';
-import React, {useState, useEffect} from 'react';
+import "./App.css";
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Routes,
+  Route,
+} from "react-router-dom";
 import { v4 as uuid } from "uuid";
-import Header from './Header'
-import AddContact from './AddContact'
-import ContactList from './ContactList'
-
+import Header from "./Header";
+import AddContact from "./AddContact";
+import ContactList from "./ContactList";
 
 function App() {
   const LOCAL_STORAGE_KEY = "contacts";
@@ -34,11 +39,18 @@ function App() {
 
   return (
     <div className="ui container">
-      <Header/>
-      <AddContact addContactHandler={addContactHandler}/>
-      <ContactList contacts = {contacts} getContactId={removeContactHandler}/>
+      <Router>
+        <Header />
+        <Routes>
+          {" "}
+          <Route path="/add" element={<AddContact />} />{" "}
+          <Route path="/" element={<ContactList />} />
+          {/* <AddContact addContactHandler={addContactHandler}/> */}
+          {/* <ContactList contacts = {contacts} getContactId={removeContactHandler}/> */}{" "}
+        </Routes>
+      </Router>
     </div>
   );
 }
 
-export default App; 
+export default App;
