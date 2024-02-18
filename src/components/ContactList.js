@@ -3,17 +3,22 @@ import { Link } from "react-router-dom";
 import ContactCard from "./ContactCard";
 
 const ContactList = (props) => {
+
   const deleteConactHandler = (id) => {
     props.getContactId(id);
   };
 
-  const contacts = [{ id: 1, name: "Kaspm", email: "sss@gmail.com" }];
+  const contacts = [
+    { id: 1, name: "Kaspm", email: "sss@gmail.com" },
+    { id: 1, name: "Kaspm", email: "sss@gmail.com" }
+  ];
+  console.log('asdas',props.contacts); // Check the contacts prop
 
-  const renderContactList = contacts.map((contact) => {
+  const renderContactList = props.contacts.map((contact) => {
     return (
       <ContactCard
         contact={contact}
-        clickHander={deleteConactHandler}
+        clickHandler={deleteConactHandler}
         key={contact.id}
       ></ContactCard>
     );

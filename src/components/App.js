@@ -16,7 +16,6 @@ function App() {
   const [contacts, setContacts] = useState([]);
 
   const addContactHandler = (contact) => {
-    console.log(contact);
     setContacts([...contacts, { id: uuid(), ...contact }]);
   };
 
@@ -43,10 +42,21 @@ function App() {
         <Header />
         <Routes>
           {" "}
-          <Route path="/add" element={<AddContact />} />{" "}
-          <Route path="/" element={<ContactList />} />
-          {/* <AddContact addContactHandler={addContactHandler}/> */}
-          {/* <ContactList contacts = {contacts} getContactId={removeContactHandler}/> */}{" "}
+          {/* <Route path="/add" element={<AddContact />} />{" "}
+          <Route path="/" element={<ContactList />} /> */}
+          <Route
+            path="/add"
+            element={<AddContact addContactHandler={addContactHandler} />}
+          />
+          <Route
+            path="/"
+            element={
+              <ContactList
+                contacts={contacts}
+                getContactId={removeContactHandler}
+              />
+            }
+          />
         </Routes>
       </Router>
     </div>
