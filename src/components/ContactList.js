@@ -8,12 +8,6 @@ const ContactList = (props) => {
     props.getContactId(id);
   };
 
-  const contacts = [
-    { id: 1, name: "Kaspm", email: "sss@gmail.com" },
-    { id: 1, name: "Kaspm", email: "sss@gmail.com" }
-  ];
-  console.log('asdas',props.contacts); // Check the contacts prop
-
   const renderContactList = props.contacts.map((contact) => {
     return (
       <ContactCard
