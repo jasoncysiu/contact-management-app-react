@@ -31,16 +31,25 @@ function App() {
     setContacts([...contacts, response.data]);
   };
 
+
+  // remove contact
   const removeContactHandler = async (id) => {
     await api.delete(`/contacts/${id}`);
     const newContactList = contacts.filter((contact) => contact.id !== id);
     setContacts(newContactList);
   };
 
-  const updateContactHandler = async (contact) => {
-    const response = await api.put(`/contacts/${contact.id}`, contact);
-    setContacts(contacts.map((c) => (c.id === contact.id ? { ...response.data } : c)));
-  };
+  //update contact
+const updateContactHandler = async (contact) => {
+  const response = await api.put(`/contacts/${contact.id}`, contact);
+  const { id, name, email } = response.data;
+  setContacts(
+    contacts.map((contact) => {
+      return contact.id === id ? { ...response.data } : contact;
+    })
+  );
+};
+
 
   useEffect(() => {
     const getAllContacts = async () => {
@@ -62,7 +71,7 @@ function App() {
         <Routes>
           <Route path="/add" element={<AddContact addContactHandler={addContactHandler} />} />
           <Route path="/" element={<ContactList contacts={contacts} getContactId={removeContactHandler} />} />
-          <Route path="/edit" element={<EditContact updateContactHandler={updateContactHandler} />} />
+          <Route path="/edit/:id" element={<EditContact updateContactHandler={updateContactHandler} />} />
           <Route path="/contact/:id" element={<ContactDetail contacts={contacts} />} />
         </Routes>
       </Router>

@@ -1,52 +1,83 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
+import api from '../api/contacts'; // Assuming this is how you access your backend
 
-function EditContact(props) {
-  const location = useLocation();
+const EditContact = ({ updateContactHandler, contacts }) => {
+  const { id } = useParams();
   const navigate = useNavigate();
-  const { id, name, email } = location.state.contact;
-  const [contactName, setContactName] = useState(name);
-  const [contactEmail, setContactEmail] = useState(email);
+  const [contact, setContact] = useState({ id: '', name: '', email: '' });
 
-  const update = (e) => {
+  // Fetch contact details from the backend if not passed through props
+  const fetchContactDetails = async (contactId) => {
+    const response = await api.get(`/contacts/${contactId}`);
+    return response.data;
+  };
+
+  useEffect(() => {
+    const getContact = async () => {
+      if (contacts) {
+        // If contacts are available as props, find the contact directly
+        const contactToEdit = contacts.find(contact => contact.id === id);
+        if (contactToEdit) {
+          setContact(contactToEdit);
+        } else {
+          navigate('/'); // Redirect if the contact isn't found
+        }
+      } else {
+        // If contacts are not available, fetch from the backend
+        const fetchedContact = await fetchContactDetails(id);
+        if (fetchedContact) {
+          setContact(fetchedContact);
+        } else {
+          navigate('/'); // Redirect if the contact isn't found
+        }
+      }
+    };
+
+    getContact();
+  }, [id, navigate, contacts]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setContact({ ...contact, [name]: value });
+  };
+
+  const handleSubmit = (e) => {
     e.preventDefault();
-    if (contactName === "" || contactEmail === "") {
-      alert("All the fields are mandatory!");
-      return;
+    if (contact.name && contact.email) {
+      updateContactHandler(contact);
+      navigate('/');
     }
-
-    props.updateContactHandler({ id, name: contactName, email: contactEmail });
-    navigate("/");
   };
 
   return (
     <div className="ui main">
       <h2>Edit Contact</h2>
-      <form className="ui form" onSubmit={update}>
+      <form className="ui form" onSubmit={handleSubmit}>
         <div className="field">
           <label>Name</label>
           <input
             type="text"
             name="name"
             placeholder="Name"
-            value={contactName}
-            onChange={(e) => setContactName(e.target.value)}
+            value={contact.name}
+            onChange={handleInputChange}
           />
         </div>
         <div className="field">
           <label>Email</label>
           <input
-            type="text"
+            type="email"
             name="email"
             placeholder="Email"
-            value={contactEmail}
-            onChange={(e) => setContactEmail(e.target.value)}
+            value={contact.email}
+            onChange={handleInputChange}
           />
         </div>
-        <button className="ui button blue">Update</button>
+        <button className="ui button blue">Update Contact</button>
       </form>
     </div>
   );
-}
+};
 
 export default EditContact;
